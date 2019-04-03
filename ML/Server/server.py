@@ -43,14 +43,32 @@ def predict():
     inputs = new_data.values
     inputs = inputs.reshape(-1,1)
     inputs  = scaler.fit_transform(inputs)
-    print(inputs.shape)
     inputs = np.reshape(inputs, (1,inputs.shape[0],inputs.shape[1]))
-    print(inputs.shape)
-    close = model.predict(inputs)
 
-    print(close)
+    data_points = 15
+    results = []
+    for i in range(data_points):
+        close = model.predict(inputs)
+        results=np.append(results,close[0])
+        auxArray=np.append(inputs[0],close[0])
+        auxArray=np.delete(auxArray,0)
+        auxArray=auxArray.reshape(-1,1)
+        inputs[0]=auxArray
 
-    return "OK";
+    results=results.reshape(-1,1)
+    results=scaler.inverse_transform(results)
+    results=results.reshape(-1)
+
+    for i in range(data_points):
+        results[i]=format(results[i], '.2f')
+
+    dic = {}
+    dic['values'] = results.tolist()
+
+    response = jsonify(dic)
+    response.status_code = 200
+
+    return (response);
 
 if __name__ == '__main__':
     app.run(port=5000, debug=True)
