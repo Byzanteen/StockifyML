@@ -3,7 +3,7 @@ import pandas as pd
 from sklearn.externals import joblib
 from flask import Flask, jsonify, request
 from sklearn.preprocessing import MinMaxScaler
-scaler = MinMaxScaler(feature_range=(0, 1))
+scaler = joblib.load("scaler.save") 
 from keras.models import load_model
 model = load_model('stockify.h5')
 model._make_predict_function()
@@ -42,7 +42,7 @@ def predict():
 
     inputs = new_data.values
     inputs = inputs.reshape(-1,1)
-    inputs  = scaler.fit_transform(inputs)
+    inputs  = scaler.transform(inputs)
     inputs = np.reshape(inputs, (1,inputs.shape[0],inputs.shape[1]))
 
     data_points = 15
