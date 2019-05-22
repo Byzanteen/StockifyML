@@ -1,5 +1,6 @@
 import numpy as np
 import pandas as pd
+import datetime as dt
 from sklearn.externals import joblib
 from flask import Flask, jsonify, request
 from sklearn.preprocessing import MinMaxScaler
@@ -15,6 +16,8 @@ app = Flask(__name__)
 def predict():
   
     test_json = request.get_json()
+    
+    data_points = 15
 
     dataset = pd.DataFrame(test_json)
     
@@ -25,6 +28,18 @@ def predict():
     dataset['timestamp']=dataset.index
     dataset['timestamp'] = pd.to_datetime(dataset['timestamp'],format='%Y-%m-%d')
     dataset.index = dataset['timestamp']
+
+    finalTime=dataset['timestamp'][0]
+    day = dt.timedelta(days=1)
+
+    dates = []
+    for i in range(data_points):
+        while True:
+            finalTime = finalTime+day
+            auxDay = finalTime.strftime('%w')
+            if auxDay != '0' and auxDay != '6':
+                dates=np.append(dates,finalTime.strftime('%Y-%m-%d'))
+                break
     
     dataset=dataset.iloc[:60,:]
 
@@ -45,7 +60,6 @@ def predict():
     inputs  = scaler.transform(inputs)
     inputs = np.reshape(inputs, (1,inputs.shape[0],inputs.shape[1]))
 
-    data_points = 15
     results = []
     for i in range(data_points):
         close = model.predict(inputs)
@@ -64,11 +78,12 @@ def predict():
 
     dic = {}
     dic['values'] = results.tolist()
+    dic['dates'] = dates.tolist()
 
     response = jsonify(dic)
     response.status_code = 200
 
-    return (response);
+    return (response)
 
 if __name__ == '__main__':
     app.run(port=5000, debug=True)

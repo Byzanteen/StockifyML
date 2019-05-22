@@ -8,8 +8,7 @@ API and the Keras model, saved as a HDF5 file.
 
 The server is a Flask application with one route, localhost:5000/predict, that expects a JSON like the response you get when calling 
 the alphavantage.co API, namely just the object containing the dates.
-The response is a json containing a tag named "values" and an array of values that are not tagged with the date they represent but are sorted
-by the date.They need to be tagged with the date in the back-end (or in the flask app).
+The response is a json containing a tag named "values" with an array of prices and a date tag with dates.
 
 To deploy it on localhost, you need to download Anaconda Navigator, import the environment described in the environment.yml file into
 conda, activate it in Anaconda Prompt with ''activate stockify'' , then navigate to the ''Server'' folder and launch it into execution with
