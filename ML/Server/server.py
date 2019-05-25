@@ -21,11 +21,14 @@ def predict():
 
     dataset = pd.DataFrame(test_json)
     
-    dataset = dataset.transpose()
     
-    dataset.rename(columns={'1. open':'open','2. high':'high','3. low':'low','4. close':'close','5. volume':'volume'}, inplace=True)
-    
-    dataset['timestamp']=dataset.index
+    #dataset = dataset.transpose()    
+
+
+    #dataset.rename(columns={'1. open':'open','2. high':'high','3. low':'low','4. close':'close','5. volume':'volume'}, inplace=True)
+
+    dataset['timestamp']=dataset['date']
+    dataset.drop('date', axis=1, inplace=True)
     dataset['timestamp'] = pd.to_datetime(dataset['timestamp'],format='%Y-%m-%d')
     dataset.index = dataset['timestamp']
 
@@ -40,7 +43,7 @@ def predict():
             if auxDay != '0' and auxDay != '6':
                 dates=np.append(dates,finalTime.strftime('%Y-%m-%d'))
                 break
-    
+
     dataset=dataset.iloc[:60,:]
 
     data = dataset.sort_index(ascending=True, axis=0)
