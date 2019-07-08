@@ -21,14 +21,11 @@ def predict():
 
     dataset = pd.DataFrame(test_json)
     
-    
-    #dataset = dataset.transpose()    
+    dataset = dataset.transpose()
 
+    dataset.rename(columns={'1. open':'open','2. high':'high','3. low':'low','4. close':'close','5. volume':'volume'}, inplace=True)
 
-    #dataset.rename(columns={'1. open':'open','2. high':'high','3. low':'low','4. close':'close','5. volume':'volume'}, inplace=True)
-
-    dataset['timestamp']=dataset['date']
-    dataset.drop('date', axis=1, inplace=True)
+    dataset['timestamp']=dataset.index
     dataset['timestamp'] = pd.to_datetime(dataset['timestamp'],format='%Y-%m-%d')
     dataset.index = dataset['timestamp']
 
